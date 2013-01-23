@@ -31,12 +31,16 @@ public class SinglePageParser
 	 */
 	public static void parse()
 	{
+		boolean success = false;
+		int oldlinksfound = links_found;
+		
 		while(!pages.isEmpty())
 		{
 			//TODO: add timing info to detect how long each page
 			// takes to parse.
 			
-			Document doc = pages.getFirst();
+			success = true;
+			Document doc = pages.removeFirst();
 			pages_parsed++;
 			
 			//get links in the doc and give them to the page retriever.
@@ -48,7 +52,12 @@ public class SinglePageParser
 			}
 			
 			//TODO: parse other stuff, words and whatnot.
+			SinglePageAnalyzer.giveBody(doc.body().text().toLowerCase());
 		}
+		if(success)
+			SinglePageAnalyzer.analyze();
+		if(oldlinksfound < links_found)
+			SinglePageRetriever.retrieve();
 	}
 	
 	/** Returns the number of links found so far. */

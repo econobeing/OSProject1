@@ -9,6 +9,9 @@ import java.util.ArrayList;
 public class SingleUI 
 {
 	private static final int max_words = 10;
+	private static final int max_pages = 50;
+	private static final String url = 
+			"http://css.insttech.washington.edu/~mealden/";
 
 	/**
 	 * @param args
@@ -45,6 +48,23 @@ public class SingleUI
 			
 			//TODO: give search terms to SinglePageAnalyzer probably. And
 			// start retrieving pages.
+			ArrayList<WordCounter> items = new ArrayList<WordCounter>();
+			for(String s : words)
+			{
+				WordCounter wc = new WordCounter(s);
+				items.add(wc);
+			}
+			SinglePageAnalyzer.giveWords(items);
+			
+			SinglePageRetriever.setMax(max_pages);
+			SinglePageRetriever.addURL(url);
+			SinglePageRetriever.retrieve();
+			
+			items = SinglePageAnalyzer.getWordCounts();
+			for(WordCounter wc : items)
+			{
+				System.out.println(wc.word + " - " + wc.count);
+			}
 		} catch(IOException e) {
 			System.err.println(e.getMessage());
 		}

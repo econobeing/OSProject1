@@ -29,7 +29,16 @@ public class SinglePageRetriever
 	public static void addURL(final String url)
 	{
 		if(!finished.contains(url))
+		{
 			queue.add(url);
+			System.out.println("added URL: " + url);
+			finished.add(url);
+		}
+		else 
+		{
+			System.out.println("ignored URL: " + url);
+		}
+			
 	}
 	
 	/**
@@ -38,7 +47,7 @@ public class SinglePageRetriever
 	 */
 	public static void setMax(final int max)
 	{
-		if(max > 0)
+		if(max >= 0)
 			max_pages = max;
 	}
 	
@@ -49,15 +58,15 @@ public class SinglePageRetriever
 	public static void retrieve()
 	{
 		boolean success = false; // whether or not any pages were retrieved.
-		while(retrieved < max_pages)
+		while(retrieved < max_pages && !queue.isEmpty())
 		{
-			String url = queue.getFirst();
+			String url = queue.removeFirst();
 			try {
 				Document doc = Jsoup.connect(url).get();
 				retrieved++;
 				SinglePageParser.addPage(doc);
 				success = true;
-				finished.add(url);
+				//finished.add(url);
 			} catch (IOException e) {
 				System.err.println("Could not retrieve URL: " + url);
 				System.err.println(e.getMessage());

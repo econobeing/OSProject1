@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class URLTest
 {
@@ -59,6 +60,29 @@ public class URLTest
     	}
     	System.out.println("\n\nOccurrences of the word '" 
     			+ word + "': " + count);
+    	
+    	String tester = "one two three four five six seven eight";
+    	ArrayList<String> words = parseWords(tester);
+    	for(String s : words)
+    		System.out.println("'" + s + "' - " + s.length());
+    }
+    
+    private static ArrayList<String> parseWords(String str)
+    {
+    	ArrayList<String> words = new ArrayList<String>();
+    	
+    	int location = str.indexOf(" ");
+    	while(location >= 0)
+    	{
+    		String extracted = str.substring(0,location);
+    		words.add(extracted);
+    		str = str.substring(location+1);
+    		location = str.indexOf(" ", 0);
+    	}
+    	if(str.length() > 0)
+    		words.add(str);
+
+    	return words;
     }
     
     private static String getLinkInfo(final Element link)
