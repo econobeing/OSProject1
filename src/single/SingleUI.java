@@ -1,15 +1,53 @@
 package single;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import java.util.ArrayList;
+
 public class SingleUI 
 {
+	private static final int max_words = 10;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) 
 	{
-		// TODO Auto-generated method stub
-
+		
+		System.out.println("Enter up to " + max_words + " words. Use a blank" +
+				" entry to stop input.");
+		
+		try {
+			BufferedReader br 
+				= new BufferedReader(new InputStreamReader(System.in));
+			
+			ArrayList<String> words = new ArrayList<String>();
+			
+			for(int i = 1 ; i <= max_words ; i++)
+			{
+				System.out.print("Enter word #" + i + ": ");
+				String s = br.readLine();
+				if(s.contains(" "))
+				{
+					System.out.println("Single words only, no spaces please.");
+					i--;
+					continue;
+				}
+				if(s.length() == 0)
+					break;
+				
+				s = s.toLowerCase();
+				s = s.trim();
+				words.add(s);
+			}
+			
+			//TODO: give search terms to SinglePageAnalyzer probably. And
+			// start retrieving pages.
+		} catch(IOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 }

@@ -1,7 +1,6 @@
 package test;
 
 import org.jsoup.Jsoup;
-import org.jsoup.helper.Validate;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -33,8 +32,8 @@ public class URLTest
     	System.out.println("Links: (" + links.size() + ")");
     	for(Element link : links)
     	{
-    		System.out.println(" * a: <" + link.tagName() + "> (" 
-    				+ link.attr("abs:href") + ")");
+    		System.out.println(" * a: <" + link.attr("abs:href") + "> (" 
+    				+ link.text() + ")");
     	}
     				
     	
