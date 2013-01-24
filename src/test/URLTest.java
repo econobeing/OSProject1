@@ -61,28 +61,29 @@ public class URLTest
     	System.out.println("\n\nOccurrences of the word '" 
     			+ word + "': " + count);
     	
-    	String tester = "one two three four five six seven eight";
-    	ArrayList<String> words = parseWords(tester);
+    	String tester = "one two three four five six seven. eight nine/ten";
+    	ArrayList<String> words = parseString(tester);
     	for(String s : words)
     		System.out.println("'" + s + "' - " + s.length());
     }
     
-    private static ArrayList<String> parseWords(String str)
+    public static ArrayList<String> parseString(String str)
     {
-    	ArrayList<String> words = new ArrayList<String>();
-    	
-    	int location = str.indexOf(" ");
-    	while(location >= 0)
-    	{
-    		String extracted = str.substring(0,location);
-    		words.add(extracted);
-    		str = str.substring(location+1);
-    		location = str.indexOf(" ", 0);
-    	}
-    	if(str.length() > 0)
-    		words.add(str);
+        final ArrayList<String> words_found = new ArrayList<String>();
+//        String str = "This is a sentence.  This is a question, right?  Yes!  It is.";
+//        String delims = "[ .,?!]+";
+//        String[] tokens = str.split(delims);
 
-    	return words;
+        //String[] parsed_words = str.split(" ?/\\,[]{}.)(*&^%$#@!;+");
+        String[] parsed_words = str.split("[ ?/\\,{}.)(*&^%$#@!;+]");
+        
+        for(int i = 0 ; i < parsed_words.length ; i++)
+        {
+            if(parsed_words[i].length() != 0)
+                words_found.add(parsed_words[i]);
+        }
+        
+        return words_found;
     }
     
     private static String getLinkInfo(final Element link)

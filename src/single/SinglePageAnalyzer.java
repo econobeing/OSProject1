@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
+
 public class SinglePageAnalyzer
 {
 	/** The words to search for and the number of occurrences. */
@@ -32,18 +33,30 @@ public class SinglePageAnalyzer
 		while(!bodies.isEmpty())
 		{
 			String body = bodies.removeFirst();
+			ArrayList<String> parsed_words = parseString(body);
 			for(WordCounter wc : words)
 			{
-				String temp = new String(body);
-				int location = temp.indexOf(wc.word);
-				while(location >= 0)
-				{
-					wc.count++;
-					temp = temp.substring(location + wc.word.length(), 
-							temp.length());
-					location = temp.indexOf(wc.word);
-				}
+			    for(String str : parsed_words)
+			    {
+			        if(str.equals(wc.word))
+			            wc.count++;
+			    }
 			}
 		}
 	}
+	
+	public static ArrayList<String> parseString(String str)
+    {
+        final ArrayList<String> words_found = new ArrayList<String>();
+        
+        String[] parsed_words = str.split("[? /\\,{}.)(*&^%$#@!;+]");
+        
+        for(int i = 0 ; i < parsed_words.length ; i++)
+        {
+            if(parsed_words[i].length() != 0)
+                words_found.add(parsed_words[i]);
+        }
+           
+        return words_found;
+    }
 }
