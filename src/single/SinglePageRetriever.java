@@ -31,13 +31,13 @@ public class SinglePageRetriever
 		if(!finished.contains(url))
 		{
 			queue.add(url);
-			System.out.println("added URL: " + url);
+			//System.out.println("added URL: " + url);
 			finished.add(url);
 		}
-		else 
-		{
-			System.out.println("ignored URL: " + url);
-		}
+//		else 
+//		{
+//			System.out.println("ignored URL: " + url);
+//		}
 			
 	}
 	

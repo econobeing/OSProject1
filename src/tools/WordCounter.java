@@ -1,4 +1,4 @@
-package single;
+package tools;
 
 public class WordCounter
 {

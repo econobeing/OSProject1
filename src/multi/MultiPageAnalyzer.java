@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import single.WordCounter;
+import tools.WordCounter;
 
 public class MultiPageAnalyzer implements Runnable
 {
     /** The words to search for and the number of occurrences. */
     private static ArrayList<WordCounter> words = new ArrayList<WordCounter>();
+
+    /** The incoming words that are to be examined. */
+    private static volatile LinkedList<String> to_examine 
+    	= new LinkedList<String>();
     
-    private static final LinkedList<String> bodies = new LinkedList<String>();
-    
+    /** Set to true when the thread should stop */
     private static boolean stop = false;
     
     @Override
@@ -20,60 +23,59 @@ public class MultiPageAnalyzer implements Runnable
     {
         while(!stop)
         {
-            while(!bodies.isEmpty())
-            {
-                String body = bodies.getFirst();
-                ArrayList<String> parsed_words = parseString(body);
-                for(WordCounter wc : words)
-                {
-                    for(String str : parsed_words)
-                    {
-                        if(str.equals(wc.word))
-                            wc.count++;
-                    }
-                }
-                bodies.removeFirst();
+        	while(!to_examine.isEmpty())
+        	{
+        		String aword = to_examine.getFirst();
+        		for(WordCounter wc : words)
+        		{
+        			if(aword.equals(wc.word))
+        				wc.count++;
+        		}
+        		to_examine.removeFirst();
+        	}
+            
+        	//give another thread a chance to do something
+            try{
+            	Thread.sleep(1);
+            } catch (InterruptedException e){
+            	
             }
         }
     }
 
     /** Erases the old list of search terms and loads a new one. */
-    public static synchronized void giveWords(final Collection<WordCounter> the_words)
+    public static void giveWordsToFind(final Collection<WordCounter> the_words)
     {
         words = new ArrayList<WordCounter>(the_words);
     }
     
-    public static synchronized ArrayList<WordCounter> getWordCounts()
+    /** Gets a list of WordCounter objects that the page analyzer was looking
+     * for. Corresponds to the list given to giveWordsToFind(), except with
+     * the counts updated. */
+    public static ArrayList<WordCounter> getWordCounts()
     {
         return new ArrayList<WordCounter>(words);
     }
     
-    public static synchronized void giveBody(final String the_body)
+    /** Adds the given Collection of words to the to_examine queue. */
+    public static void giveWordsToExamine(final Collection<String> the_words)
     {
-        bodies.add(the_body);
+    	to_examine.addAll(the_words);
     }
     
-    public static ArrayList<String> parseString(String str)
+    /**
+     * Lets us know if the queue of words to examine is empty.
+     * @return <code>true</code> if the page analyzer has no words left to
+     * examine.
+     */
+    public static boolean isDone()
     {
-        final ArrayList<String> words_found = new ArrayList<String>();
-        
-        String[] parsed_words = str.split("[? /\\,{}.)(*&^%$#@!;+]");
-        
-        for(int i = 0 ; i < parsed_words.length ; i++)
-        {
-            if(parsed_words[i].length() != 0)
-                words_found.add(parsed_words[i]);
-        }
-           
-        return words_found;
+        return to_examine.isEmpty();
     }
     
-    public static synchronized boolean isDone()
-    {
-        return bodies.isEmpty();
-    }
-    
-    public static synchronized void stop()
+    /** Tells the thread to stop once it reaches the end of its current 
+     * iteration. */
+    public static void stop()
     {
         stop = true;
     }

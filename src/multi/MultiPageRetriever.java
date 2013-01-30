@@ -10,19 +10,21 @@ import java.util.LinkedList;
 public class MultiPageRetriever implements Runnable
 {
     /** The URLs to retrieve. */
-    private static final LinkedList<String> queue = new LinkedList<String>();
+    private static volatile LinkedList<String> queue 
+    	= new LinkedList<String>();
     
-    /** The URLs that we've already retrieved. */
-    private static final ArrayList<String> finished = new ArrayList<String>();
-    
-    /** The number of retrieved pages so far. */
-    private static int retrieved = 0;
-    
-    /** The maximum number of pages to retrieve. */
-    private static int max_pages = 0;
-    
+    /** Set to true when the thread should stop */
     private static boolean stop = false;
     
+    /** The URLs that we've already retrieved. */
+    private static volatile ArrayList<String> finished 
+    	= new ArrayList<String>();
+    
+    /** The number of retrieved pages so far. */
+    private static volatile int retrieved = 0;
+    
+    /** The maximum number of pages to retrieve. */
+    private static int max_pages = 0;    
     
     @Override
     public void run()
@@ -46,7 +48,12 @@ public class MultiPageRetriever implements Runnable
             if(retrieved >= max_pages)
                 stop = true;
             
-            //TODO: maybe put a wait() in here
+           	//give other threads a chance to run
+            try{
+            	Thread.sleep(1);
+            } catch (InterruptedException e){
+            	
+            }
         }
     }
     
@@ -55,18 +62,18 @@ public class MultiPageRetriever implements Runnable
      * has been passed in previously.
      * @param url The URL to retrieve. 
      */
-    public static synchronized void addURL(final String url)
+    public static void addURL(final String url)
     {
         if(!finished.contains(url))
         {
             queue.add(url);
-            System.out.println("added URL: " + url);
+            //System.out.println("added URL: " + url);
             finished.add(url);
         }
-        else 
-        {
-            System.out.println("ignored URL: " + url);
-        }
+//        else 
+//        {
+//            System.out.println("ignored URL: " + url);
+//        }
             
     }
     
@@ -74,14 +81,14 @@ public class MultiPageRetriever implements Runnable
      * Sets the maximum number of pages to retrieve.
      * @param max The maximum number of pages to retrieve.
      */
-    public static synchronized void setMax(final int max)
+    public static void setMax(final int max)
     {
         if(max >= 0)
             max_pages = max;
     }
     
     /** Gets the number of pages retrieved so far. */
-    public static synchronized int getRetrievedCount()
+    public static int getRetrievedCount()
     {
         return retrieved;
     }
@@ -91,12 +98,13 @@ public class MultiPageRetriever implements Runnable
      * or the retrieve limit has been reached.
      * @return <code>true</code> if the page retriever is done.
      */
-    public static synchronized boolean isDone()
+    public static boolean isDone()
     {
         return (retrieved >= max_pages) || (queue.isEmpty());
     }
 
-    public static synchronized void stop()
+    /** Tells the thread to stop once it reaches the end of its loop. */
+    public static void stop()
     {
         stop = true;
     }
