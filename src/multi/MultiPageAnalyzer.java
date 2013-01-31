@@ -30,6 +30,8 @@ public class MultiPageAnalyzer implements Runnable
         		{
         			if(aword.equals(wc.word))
         				wc.count++;
+        			
+        			//TODO: catch null pointer exception on if statement
         		}
         		to_examine.removeFirst();
         	}
@@ -60,7 +62,9 @@ public class MultiPageAnalyzer implements Runnable
     /** Adds the given Collection of words to the to_examine queue. */
     public static void giveWordsToExamine(final Collection<String> the_words)
     {
-    	to_examine.addAll(the_words);
+        //addAll() was giving an index out of bounds exception
+        for(String s : the_words)
+            to_examine.add(s);
     }
     
     /**

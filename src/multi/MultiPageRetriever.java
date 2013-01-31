@@ -34,15 +34,25 @@ public class MultiPageRetriever implements Runnable
             while(!queue.isEmpty() && retrieved < max_pages)
             {
                 String url = queue.getFirst();
+                if(url.equals(""))
+                {
+                    queue.removeFirst();
+                    continue;
+                }
+                
                 try{
                     Document doc = Jsoup.connect(url).get();
                     retrieved++;
                     MultiPageParser.addPage(doc);
-                    queue.removeFirst();
                 } catch (IOException e) {
                     System.err.println("Could not retrieve URL: " + url);
                     System.err.println(e.getMessage());
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Attempted to retrieve non-valid URL: " 
+                            + url);
+                    System.err.println(e.getMessage());
                 }
+                queue.removeFirst();
             }
             
             if(retrieved >= max_pages)
@@ -67,14 +77,8 @@ public class MultiPageRetriever implements Runnable
         if(!finished.contains(url))
         {
             queue.add(url);
-            //System.out.println("added URL: " + url);
             finished.add(url);
         }
-//        else 
-//        {
-//            System.out.println("ignored URL: " + url);
-//        }
-            
     }
     
     /**

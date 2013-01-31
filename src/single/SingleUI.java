@@ -15,6 +15,7 @@ public class SingleUI
 	private static final int max_pages = 50;
 	private static final String url = 
 			"http://css.insttech.washington.edu/~mealden/";
+	//private static final String url = "http://google.com";
 	
 //	private static final String[] wordlist = {"2009", "25", "30", "35", "40", 
 //    	"45", "70", "90", "a", "abandoned", "about", "advanced", "advertising", 
@@ -95,20 +96,23 @@ public class SingleUI
 			
 			//print out results
 			int retrieved = SinglePageRetriever.getRetrievedCount();
+			int wordsparsed = SinglePageParser.getNumWordsParsed();
+			int totallinks = SinglePageParser.getLinkCount();
+			
 			System.out.println("\n\nPages retrieved: " + retrieved);
-			System.out.println("Total words retrieved: " + 
-                    SinglePageParser.getNumWordsParsed());
-			System.out.println("Average words per page: " + 
-					SinglePageParser.getNumWordsParsed()/retrieved);
-			System.out.println("Average URLs per page: " + 
-					SinglePageParser.getLinkCount()/retrieved);
+			System.out.println("Total words retrieved: " + wordsparsed);
+			int avgwpp = (retrieved!=0) ? wordsparsed/retrieved : wordsparsed;
+			System.out.println("Average words per page: " + avgwpp);
+			int avgurl = (retrieved!=0) ? totallinks/retrieved : totallinks;
+			System.out.println("Average URLs per page: " + avgurl);
+			
 			System.out.println("\n(keyword) - (Avg. hits per page) - " +
 					"(Total hits)");
-			
 			items = SinglePageAnalyzer.getWordCounts();
 			for(WordCounter wc : items)
 			{
-				float avg = (float)wc.count / (float)retrieved;
+			    float avg = (retrieved != 0) ? 
+			            (float)wc.count/(float)retrieved : 0;
 				System.out.format(wc.word + " - " + "%.3f" + " - " + wc.count
 						+ "\n", avg);
 			}

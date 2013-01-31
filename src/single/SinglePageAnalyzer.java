@@ -37,9 +37,9 @@ public class SinglePageAnalyzer
 	 * be examined. */
 	public static void giveWordsToExamine(final Collection<String> the_words)
 	{
-//		for(String s : the_words)
-//			to_examine.push(s);
-		to_examine.addAll(the_words);
+	    //addAll() was giving an index out of bounds execption
+		for(String s : the_words)
+			to_examine.push(s);
 	}
 	
 	/** Analyzes all the words currently in the queue to see if they match any

@@ -31,14 +31,8 @@ public class SinglePageRetriever
 		if(!finished.contains(url))
 		{
 			queue.add(url);
-			//System.out.println("added URL: " + url);
 			finished.add(url);
-		}
-//		else 
-//		{
-//			System.out.println("ignored URL: " + url);
-//		}
-			
+		}	
 	}
 	
 	/**
@@ -61,6 +55,9 @@ public class SinglePageRetriever
 		while(retrieved < max_pages && !queue.isEmpty())
 		{
 			String url = queue.removeFirst();
+			if(url.equals(""))
+			    continue;
+			
 			try {
 				Document doc = Jsoup.connect(url).get();
 				retrieved++;
@@ -70,6 +67,10 @@ public class SinglePageRetriever
 			} catch (IOException e) {
 				System.err.println("Could not retrieve URL: " + url);
 				System.err.println(e.getMessage());
+			} catch (IllegalArgumentException e) {
+			    System.err.println("Attempted to retrieve non-valid URL: " +
+			            url);
+			    System.err.println(e.getMessage());
 			}
 		}
 		
