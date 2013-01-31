@@ -69,6 +69,8 @@ public class SinglePageParser
 			
 			SinglePageAnalyzer.giveWordsToExamine(
 					parseString(doc.body().text().toLowerCase()));
+			SinglePageAnalyzer.giveWordsToExamine(
+			        parseString(doc.title().toLowerCase()));
 			
 			watch.pause();
 		}

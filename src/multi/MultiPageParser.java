@@ -61,7 +61,8 @@ public class MultiPageParser implements Runnable
                 
                 MultiPageAnalyzer.giveWordsToExamine(
                 		parseString(doc.body().text().toLowerCase()));
-                
+                MultiPageAnalyzer.giveWordsToExamine(
+                        parseString(doc.title().toLowerCase()));
                 watch.pause();
                 
                 pages.removeFirst();

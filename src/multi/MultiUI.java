@@ -122,6 +122,8 @@ public class MultiUI
             //print out results
             int retrieved = MultiPageRetriever.getRetrievedCount();
             System.out.println("\n\nPages retrieved: " + retrieved);
+            System.out.println("Total words retrieved: " + 
+                    MultiPageParser.getNumWordsParsed());
 			System.out.println("Average words per page: " + 
 					MultiPageParser.getNumWordsParsed()/retrieved);
 			System.out.println("Average URLs per page: " + 

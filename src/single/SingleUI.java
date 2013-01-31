@@ -96,6 +96,8 @@ public class SingleUI
 			//print out results
 			int retrieved = SinglePageRetriever.getRetrievedCount();
 			System.out.println("\n\nPages retrieved: " + retrieved);
+			System.out.println("Total words retrieved: " + 
+                    SinglePageParser.getNumWordsParsed());
 			System.out.println("Average words per page: " + 
 					SinglePageParser.getNumWordsParsed()/retrieved);
 			System.out.println("Average URLs per page: " + 
